@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Best Candidates</title>
+    <!-- Stil dosyaları -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.bundle.css') }}">
+</head>
+
+<body>
+    <!-- Kullanıcı Bilgileri ve Logout Butonu -->
+    <div class="user-info d-flex justify-content-end align-items-center p-3">
+        <span class="me-3">Hoş geldiniz, {{ user['name'] }}!</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger logout-button">Çıkış</a>
+    </div>
+    <div class="container">
+        <header class="text-center mb-4">
+            <h1>Top Candidates</h1>
+        </header>
+        <div class="results-list">
+            <div class="candidate-item">
+                <pre>{{ result | safe }}</pre>
+            </div>
+        </div>
+        <div class="actions">
+            <form action="{{ url_for('download_selected_pdfs') }}" method="POST">
+                <button type="submit" class="btn-download">Download PDFs</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+
+/* Genel ayarlar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+header h1 {
+    /*text-align: center;
+    color: #4a90e2;
+    margin-bottom: 20px;*/
+    font-family: "Delius", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Aday Listeleme */
+.results-list {
+    margin-top: 20px;
+}
+
+.candidate-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+/* Form alanları */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #555;
+}
+
+input[type="text"],
+textarea,
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+textarea {
+    resize: none;
+}
+
+
+button.btn-submit {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+button.btn-submit:hover {
+    background-color: #357abd;
+}
+
+/* Sonuçlar */
+.results {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+a.btn-back {
+    text-decoration: none;
+    color: #fff;
+    background-color: #4a90e2;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+a.btn-back:hover {
+    background-color: #357abd;
+}
+
+.btn-download {
+    background-color: #e31e25; /* Mavi renk (Bootstrap birincil renk) */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-download:hover {
+    background-color: #e31e25; /* Hover (üzerine gelince) daha koyu mavi */
+    transform: scale(1.05); /* Butonu biraz büyütür */
+}
+
+.btn-download:active {
+    background-color: #e31e25; /* Aktif durumu daha koyu bir renk */
+}
+
+.btn-secondary.btn-download {
+    background-color: #6c757d; /* Bootstrap secondary rengi */
+}
+
+.btn-primary.btn-download {
+    background-color: #007bff; /* Bootstrap primary rengi */
+}
+
+
+
+/* Loading ekranı */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none; /* Başlangıçta gizlenmiş */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #4a90e2;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-screen p {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+.londrina-sketch-regular {   font-family: "Londrina Sketch", sans-serif;   font-weight: 400;   font-style: normal; }
+
+
+/* Konteyner görünümü: listeler, padding vs. */
+.folder-tree-container ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 0 1em; /* soldan küçük bir boşluk */
+    border-left: 1px dashed #ccc; /* isteğe bağlı dikey çizgi */
+}
+.folder-tree-container li {
+    margin: 0.3em 0;
+    position: relative;
+}
+.folder-tree-container a {
+    text-decoration: none;
+    color: #333; /* link rengi */
+}
+.folder-tree-container .folder-name {
+    cursor: pointer;
+    font-weight: bold;
+    /* Mevcut projenizde Indie Flower font'u var, onu da kullanabilirsiniz */
+    font-family: 'Indie Flower', cursive;
+    color: #007bff; /* klasör metin rengi */
+}
+/* Kapalı klasör ikonu */
+.folder-name::before {
+    content: "\f07b"; /* Font Awesome -> fa-folder  (uniF07B) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 5px;
+    color: #FFB400; /* sarımsı klasör ikonu */
+}
+/* Açık klasör ikonu */
+.folder-open::before {
+    content: "\f07c"; /* Font Awesome -> fa-folder-open (uniF07C) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 5px;
+    color: #FFB400;
+}
+/* Dosya ikonu */
+.file-link::before {
+    content: "\f15b"; /* Font Awesome -> fa-file */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 5px;
+    color: #999; 
+}
+
+/* Hover efektleri (opsiyonel) */
+.folder-name:hover,
+.file-link:hover {
+    text-decoration: underline;
+}

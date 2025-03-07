@@ -1,0 +1,326 @@
+<!-- index.html -->
+{% macro render_tree(node) %}
+<ul>
+    <li>
+        {% if node.type == 'directory' %}
+        <!-- Klasör -->
+        <span class="stepper-title folder-open" onclick="toggleFolder(this)">
+            {{ node.name }}
+        </span>
+        <ul style="display: none;">
+            {% for child in node.children %}
+            {{ render_tree(child) }}
+            {% endfor %}
+        </ul>
+        {% else %}
+        <!-- Dosya -->
+        <a class="file-link" href="{{ url_for('download_file', path=node.path) }}">
+            {{ node.name }}
+        </a>
+        {% endif %}
+    </li>
+</ul>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiMatch - PDF Upload</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JavaScript ve Popper.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+    <!-- Stil dosyaları -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.bundle.css') }}">
+</head>
+
+<body>
+    <!-- Loading ekranı -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p> Loading... Please wait</p>
+    </div>
+
+    <!-- Kullanıcı Bilgileri ve Logout Butonu -->
+    <div class="user-info d-flex justify-content-end align-items-center p-3">
+        <span class="stepper-title">Welcome, {{ user['name'] }}!</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger logout-button">Çıkış</a>
+    </div>
+
+    <div class="container">
+        <header class="text-center mb-4">
+            <h1>OptiMatch - Find the Best Candidates</h1>
+        </header>
+
+        <!-- Stepper Başlangıcı -->
+        <div class="stepper stepper-pills" id="kt_stepper_example_basic">
+            <div class="stepper-nav flex-center flex-wrap mb-10 gap-5">
+                <!-- Step 1 -->
+                <div class="stepper-item current" data-kt-stepper-element="nav">
+                    <div class="stepper-wrapper d-flex align-items-center">
+                        <div class="stepper-icon w-40px h-40px">
+                            <i class="stepper-check fas fa-check"></i>
+                            <span class="stepper-number">1</span>
+                        </div>
+                        <div class="stepper-label">
+                            <h3 class="stepper-title">Job Info</h3>
+                            <div class="stepper-desc">Enter Job Description</div>
+                        </div>
+                    </div>
+                    <div class="stepper-line h-40px"></div>
+                </div>
+                <!-- Step 2 -->
+                <div class="stepper-item" data-kt-stepper-element="nav">
+                    <div class="stepper-wrapper d-flex align-items-center">
+                        <div class="stepper-icon w-40px h-40px">
+                            <i class="stepper-check fas fa-check"></i>
+                            <span class="stepper-number">2</span>
+                        </div>
+                        <div class="stepper-label">
+                            <h3 class="stepper-title">Keywords</h3>
+                            <div class="stepper-desc">Enter Relevant Keywords</div>
+                        </div>
+                    </div>
+                    <div class="stepper-line h-40px"></div>
+                </div>
+                <!-- Step 3 -->
+                <div class="stepper-item" data-kt-stepper-element="nav">
+                    <div class="stepper-wrapper d-flex align-items-center">
+                        <div class="stepper-icon w-40px h-40px">
+                            <i class="stepper-check fas fa-check"></i>
+                            <span class="stepper-number">3</span>
+                        </div>
+                        <div class="stepper-label">
+                            <h3 class="stepper-title">Number of Candidates</h3>
+                            <div class="stepper-desc">Select Number of Candidates</div>
+                        </div>
+                    </div>
+                    <div class="stepper-line h-40px"></div>
+                </div>
+                <!-- Step 4 -->
+                <div class="stepper-item" data-kt-stepper-element="nav">
+                    <div class="stepper-wrapper d-flex align-items-center">
+                        <div class="stepper-icon w-40px h-40px">
+                            <i class="stepper-check fas fa-check"></i>
+                            <span class="stepper-number">4</span>
+                        </div>
+                        <div class="stepper-label">
+                            <h3 class="stepper-title">Upload PDFs</h3>
+                            <div class="stepper-desc">Upload PDF Files</div>
+                        </div>
+                    </div>
+                    <div class="stepper-line h-40px"></div>
+                </div>
+            </div>
+
+            <!-- Stepper Form -->
+            <form id="kt_stepper_example_basic_form" action="{{ url_for('upload_file') }}" method="POST"
+                enctype="multipart/form-data">
+                <!-- Step 1: Job Info -->
+                <div class="flex-column current" data-kt-stepper-element="content">
+                    <div class="fv-row mb-10">
+                        <label for="job_info" class="form-label">Job Description:</label>
+                        <textarea name="job_info" id="job_info" rows="20" class="form-control form-control-solid"
+                            required></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 2: Keywords -->
+                <div class="flex-column" data-kt-stepper-element="content">
+                    <div class="fv-row mb-10">
+                        <label for="keywords" class="form-label">Keywords (separate with commas):</label>
+                        <input type="text" name="keywords" id="keywords" class="form-control form-control-solid">
+                    </div>
+                </div>
+
+                <!-- Step 3: Number of Candidates -->
+                <div class="flex-column" data-kt-stepper-element="content">
+                    <div class="fv-row mb-10">
+                        <label for="candidate_count" class="form-label">Number of Candidates to Select:</label>
+                        <select name="candidate_count" id="candidate_count" class="form-control form-control-solid">
+                            {% for i in range(1, 11) %}
+                            <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 4: Upload PDFs -->
+                <div class="flex-column" data-kt-stepper-element="content">
+                    <div class="fv-row mb-10">
+                        <label for="file" class="form-label">Select PDF Files:</label>
+                        <input type="file" name="file" id="file" multiple class="form-control form-control-solid"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Stepper Actions -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary btn-download"
+                        data-kt-stepper-action="previous">Previous</button>
+                    <button type="button" class="btn btn-primary btn-download"
+                        data-kt-stepper-action="next">Next</button>
+                    <button type="submit" class="btn btn-download d-none" id="submit-btn"
+                        style="background-color: #e31e25; color: white;">Submit</button>
+                </div>
+            </form>
+        </div>
+        <!-- STEP 2: Folder Tree Kısmı (Ayrı Bir Satır) -->
+        <div class="row my-4">
+            <div class="col-12">
+                <h3>Your Previous Queries / Transactions</h3>
+                <p>
+                Hello, {{ user['name'] }}! Below you can see the results of your previous queries or uploads. You can access subfolders and files by clicking on the folder names and download the file you want.
+                </p>
+
+                <div class="folder-tree-container my-3">
+                    {{ render_tree(folder_tree) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- scripts.bundle.js dosyasını ekleyin -->
+    <script src="{{ url_for('static', filename='js/scripts.bundle.js') }}"></script>
+    <script>
+        function toggleFolder(element) {
+            var childUl = element.parentNode.querySelector('ul');
+
+            if (childUl) {
+                // Açık mı kapalı mı?
+                if (childUl.style.display === 'none') {
+                    childUl.style.display = 'block';
+                    // Klasöre 'folder-open' ekle
+                    element.classList.add('folder-open');
+                    // 'folder-name' default klasör ikonunu kaldırmak isterseniz:
+                    //element.classList.remove('stepper-title');
+                } else {
+                    childUl.style.display = 'none';
+                    // Açık klasör yerine tekrar normal klasör yapalım
+                    element.classList.add('stepper-title');
+                    //element.classList.remove('folder-open');
+                }
+            }
+        }
+    </script>
+
+    <!-- Stepper ve olayları yönetmek için JavaScript kodları -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var element = document.querySelector("#kt_stepper_example_basic");
+            var stepElements = document.querySelectorAll(".stepper-item");
+            var totalSteps = stepElements.length;
+            var currentStepIndex = 0; // İlk adımdayız
+
+            if (typeof KTStepper === "undefined") {
+                console.error("KTStepper tanımlı değil. scripts.bundle.js dosyasını kontrol edin.");
+                return;
+            }
+
+            var stepper = new KTStepper(element);
+
+            function clearValidationMessages(stepIndex) {
+                // Geçerli adımda gösterilen hata mesajlarını temizleyin
+                var currentStepContent = document.querySelectorAll('[data-kt-stepper-element="content"]')[stepIndex];
+                var errorMessages = currentStepContent.querySelectorAll(".validation-error");
+                errorMessages.forEach(function (error) {
+                    error.remove();
+                });
+            }
+
+            function showValidationMessage(input, message) {
+                // Hata mesajını inputun hemen altına ekle
+                var errorMessage = document.createElement("span");
+                errorMessage.classList.add("validation-error", "text-danger", "mt-1");
+                errorMessage.innerText = message;
+                input.parentNode.appendChild(errorMessage);
+            }
+
+            function validateStep(stepIndex) {
+                // Önceki hata mesajlarını temizle
+                clearValidationMessages(stepIndex);
+
+                // Her stepteki input alanlarını al
+                var currentStepContent = document.querySelectorAll('[data-kt-stepper-element="content"]')[stepIndex];
+                var inputs = currentStepContent.querySelectorAll("input, textarea, select");
+
+                var isValid = true; // Adımın geçerli olup olmadığını takip edin
+
+                // Inputlar arasında gezin ve boş olanları kontrol et
+                for (var i = 0; i < inputs.length; i++) {
+                    if (inputs[i].value.trim() === "") {
+                        // Eğer input boşsa kullanıcıya uyarı ver ve geçişe izin verme
+                        //showValidationMessage(inputs[i], "Bu alanı doldurmak zorunludur.");
+                        //isValid = false; // Geçersiz durumda ilerlemesine izin verme
+                    }
+                }
+
+                return isValid;
+            }
+
+            stepper.on("kt.stepper.next", function () {
+                if (currentStepIndex < totalSteps - 1) {
+                    // Geçerli adımı kontrol et, boşsa ilerleme
+                    if (validateStep(currentStepIndex)) {
+                        currentStepIndex++;
+                        stepper.goNext();
+
+                        // Tamamlanan adımı işaretle
+                        stepElements[currentStepIndex - 1].classList.add("completed");
+
+                        // Eğer son adımdaysa "Next" butonunu gizleyip "Submit" butonunu göster
+                        if (currentStepIndex === totalSteps - 1) {
+                            document.querySelector("[data-kt-stepper-action='next']").classList.add("d-none");
+                            document.getElementById("submit-btn").classList.remove("d-none");
+                        }
+                    }
+                }
+            });
+
+            stepper.on("kt.stepper.previous", function () {
+                if (currentStepIndex > 0) {
+                    currentStepIndex--;
+                    stepper.goPrevious();
+
+                    // Geri dönülen adımın completed sınıfını kaldır
+                    stepElements[currentStepIndex].classList.remove("completed");
+
+                    // Eğer son adımdan önceyse "Next" butonunu göster, "Submit" butonunu gizle
+                    if (currentStepIndex < totalSteps - 1) {
+                        document.querySelector("[data-kt-stepper-action='next']").classList.remove("d-none");
+                        document.getElementById("submit-btn").classList.add("d-none");
+                    }
+                }
+            });
+
+            // Form gönderildiğinde loading ekranını göster
+            var form = document.getElementById('kt_stepper_example_basic_form');
+            form.onsubmit = function () {
+                document.getElementById('loading-screen').style.display = 'flex';
+            };
+        });
+
+        // Sayfa yüklendiğinde loading ekranını gizliyoruz
+        window.onload = function () {
+            document.getElementById('loading-screen').style.display = 'none';
+        };
+
+    </script>
+</body>
+
+</html>

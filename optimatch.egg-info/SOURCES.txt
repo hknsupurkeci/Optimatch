@@ -1,0 +1,6 @@
+setup.py
+optimatch/__init__.py
+optimatch.egg-info/PKG-INFO
+optimatch.egg-info/SOURCES.txt
+optimatch.egg-info/dependency_links.txt
+optimatch.egg-info/top_level.txt
